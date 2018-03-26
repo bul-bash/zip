@@ -26,12 +26,33 @@ namespace zip
 
         static void Main(string[] args)
         {
-
+            var startTime = DateTime.Now;
             string fileName = "A:\\1.iso";
 
 
+            CompressA(fileName); //без многопоточности
 
-            Compress(fileName);
+
+
+           //  Compress(fileName); //с многопоточностью
+           
+
+            Console.WriteLine(DateTime.Now - startTime);
+
+        }
+
+        private static void CompressA(string fileName)
+        {
+            using (var originalFile = new FileStream(fileName, FileMode.Open))
+            {
+
+
+                using (var fileStream = File.Create(fileName + ".gz"))
+                using (GZipStream stream = new GZipStream(fileStream, CompressionMode.Compress))
+                {
+                    originalFile.CopyTo(stream);
+                }
+            }
         }
 
         static public void Compress(string inFileName)
